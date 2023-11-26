@@ -21,6 +21,7 @@
 #include <ProcessConstants.au3>
 #include <String.au3>
 #include <WinAPIError.au3>
+#include <Misc.au3>
 
 #NoTrayIcon
 #RequireAdmin
