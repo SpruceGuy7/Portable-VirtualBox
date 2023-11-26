@@ -79,6 +79,12 @@ Changelog of Starter:
 CURRENT SPRUCEGUY7 VERSIONS 
 ----------------------------------------------------------------------------------
 
+Version 7.0.12.1
+- Updated build.bat removing xcopy references to LiesMich.txt & ReadMe.txt.
+- Updated build.bat folder references to include version base prefix (7).
+- Updated build.bat archive references to include full current version (7.0.12.1).
+- Updated ReadMe.txt with current version changelog.
+
 Version 7.0.12.0
 - Versioning changed to run inline with VirtualBox release version.
 - Updated source code to support VirtualBox v7 and above.
