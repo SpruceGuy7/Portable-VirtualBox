@@ -166,8 +166,6 @@ if not exist "%release_folder%" md "%release_folder%"
 rem Make a copy of the files for easy compression later.
 xcopy /i /e "%input_folder%data" "%build_folder%\Portable-VirtualBox\data\"
 xcopy /i /e "%input_folder%source" "%build_folder%\Portable-VirtualBox\source\"
-xcopy "%input_folder%LiesMich.txt" "%build_folder%\Portable-VirtualBox\"
-xcopy "%input_folder%ReadMe.txt"  "%build_folder%\Portable-VirtualBox\"
 
 rem Compile Portable-VirtualBox.
 "%aut2exe%" /in "%build_folder%\Portable-VirtualBox\source\Portable-VirtualBox.au3" /out "%build_folder%\Portable-VirtualBox\Portable-VirtualBox.exe" /icon "%build_folder%\Portable-VirtualBox\source\VirtualBox.ico" /x86
