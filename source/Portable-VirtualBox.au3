@@ -30,6 +30,12 @@ Opt ("TrayAutoPause", 0)
 Opt ("TrayMenuMode", 11)
 Opt ("TrayOnEventMode", 1)
 
+; Run only one instance
+If _Singleton("Portable-VirtualBox", 1) = 0 Then
+  MsgBox($MB_SYSTEMMODAL, "Warning", "VirtualBox is already running!")
+  Exit
+EndIf
+
 TraySetClick (16)
 TraySetState ()
 TraySetToolTip ("Portable-VirtualBox")
@@ -42,6 +48,7 @@ Global $pwd = @ScriptDir
 Global $updateUrl = IniRead (@ScriptDir&"\data\settings\vboxinstall.ini", "download", "update", "NotFound")
 
 Global $new1 = 0, $new2 = 0
+Global $isSettingsWindowVisible = false;
 
 If FileExists (@ScriptDir&"\update.exe") Then
   Sleep (2000)
@@ -49,7 +56,7 @@ If FileExists (@ScriptDir&"\update.exe") Then
   FileDelete (@ScriptDir&"\update.exe")
 EndIf
 
-If NOT FileExists ($var1) Then
+If Not FileExists ($var1) Then
   DirCreate (@ScriptDir&"\data\settings")
   IniWrite ($var1, "hotkeys", "key", "1")
   IniWrite ($var1, "hotkeys", "userkey", "0")
@@ -83,21 +90,13 @@ If NOT FileExists ($var1) Then
   IniWrite ($var1, "hotkeys", "24", "6")
 
   IniWrite ($var1, "usb", "key", "0")
-
   IniWrite ($var1, "net", "key", "0")
-
   IniWrite ($var1, "language", "key", "english")
-
   IniWrite ($var1, "userhome", "key", "%CD%\data\.VirtualBox")
-
   IniWrite ($var1, "startvm", "key", "")
-
   IniWrite ($var1, "update", "key", "1")
-
   IniWrite ($var1, "lang", "key", "0")
-
   IniWrite ($var1, "version", "key", "")
-
   IniWrite ($var1, "starter", "key", "")
 Else
   IniReadSection ($var1, "update")
@@ -318,7 +317,7 @@ If NOT (FileExists (@ScriptDir&"\app32") OR FileExists (@ScriptDir&"\app64")) Th
 
   $Checkbox100 = GUICtrlCreateCheckbox (IniRead ($var2 & $lng &".ini", "download", "07", "NotFound"), 32, 151, 460, 26)
   $Checkbox110 = GUICtrlCreateCheckbox (IniRead ($var2 & $lng &".ini", "download", "08", "NotFound"), 32, 175, 460, 26)
-  ;$Checkbox120 = GUICtrlCreateCheckbox (IniRead ($var2 & $lng &".ini", "download", "09", "NotFound"), 32, 199, 460, 26)
+ ;$Checkbox120 = GUICtrlCreateCheckbox (IniRead ($var2 & $lng &".ini", "download", "09", "NotFound"), 32, 199, 460, 26)
   $Checkbox130 = GUICtrlCreateCheckbox (IniRead ($var2 & $lng &".ini", "download", "10", "NotFound"), 32, 223, 460, 26)
 
   GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "download", "11", "NotFound"), 32, 247, 436, 26)
@@ -374,6 +373,7 @@ If (FileExists (@ScriptDir&"\app32\virtualbox.exe") OR FileExists (@ScriptDir&"\
     Local $values0, $values1, $values2, $values3, $values4, $values5, $values6, $values7, $values8, $values9, $values10, $values11, $values12, $values13
     Local $line, $content, $i, $j, $k, $l, $m, $n
     Local $file = FileOpen (@ScriptDir&"\data\.VirtualBox\VirtualBox.xml", 128)
+
     If $file <> -1 Then
       $line    = FileRead ($file)
       $values0 = _StringBetween ($line, '<MachineRegistry>', '</MachineRegistry>')
@@ -469,8 +469,7 @@ If (FileExists (@ScriptDir&"\app32\virtualbox.exe") OR FileExists (@ScriptDir&"\
     EndIf
   Else
     MsgBox (0, IniRead ($var2 & $lng &".ini", "download", "15", "NotFound"), IniRead ($var2 & $lng &".ini", "download", "16", "NotFound"))
-EndIf
-
+  EndIf
 
   If FileExists (@ScriptDir&"\"& $arch & "\VirtualBox.exe") AND FileExists (@ScriptDir&"\"& $arch & "\VBoxSVC.exe") AND FileExists (@ScriptDir&"\"& $arch & "\VBoxC.dll") Then
     If NOT ProcessExists ("VirtualBox.exe") OR NOT ProcessExists ("VBoxManage.exe") Then
@@ -493,7 +492,7 @@ EndIf
         Local $shift1, $shift2, $shift3, $shift4, $shift5, $shift6
         Local $plus01, $plus02, $plus03, $plus04, $plus05, $plus06, $plus07, $plus08, $plus09, $plus10, $plus11, $plus12, $plus13, $plus14, $plus15, $plus16, $plus17, $plus18
 
-	If IniRead ($var1, "hotkeys", "01", "NotFound") = "^" Then
+        If IniRead ($var1, "hotkeys", "01", "NotFound") = "^" Then
           $ctrl1  = "CTRL"
           $plus01 = "+"
         EndIf
@@ -584,8 +583,8 @@ EndIf
         TrayCreateItem (IniRead ($var2 & $lng &".ini", "tray", "06", "NotFound") &" (" & $ctrl6 & $plus06 & $alt6 & $plus12 & $shift6 & $plus18 & IniRead ($var1, "hotkeys", "24", "NotFound") & ")")
         TrayItemSetOnEvent (-1, "ExitScript")
         TraySetState ()
-	TraySetToolTip (IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"))
-	TrayTip("", IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"), 5)
+        TraySetToolTip (IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"))
+        TrayTip("", IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"), 5)
       Else
         TrayCreateItem (IniRead ($var2 & $lng &".ini", "tray", "01", "NotFound"))
         TrayItemSetOnEvent (-1, "ShowWindows_VM")
@@ -603,8 +602,8 @@ EndIf
         TrayCreateItem (IniRead ($var2 & $lng &".ini", "tray", "06", "NotFound"))
         TrayItemSetOnEvent (-1, "ExitScript")
         TraySetState ()
-	TraySetToolTip (IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"))
-	TrayTip("", IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"), 5)
+        TraySetToolTip (IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"))
+        TrayTip("", IniRead ($var2 & $lng &".ini", "tray", "07", "NotFound"), 5)
       EndIf
 
       If @OSArch = "x86" Then
@@ -639,13 +638,14 @@ EndIf
       RunWait (@SystemDir&"\regsvr32.exe /S "& $arch &"\VBoxC.dll", @ScriptDir, @SW_HIDE)
       DllCall ($arch&"\VBoxRT.dll", "hwnd", "RTR3Init")
 
+      Sleep (1666)
       SplashOff ()
 
-      If RegRead ("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxDRV", "DisplayName") <> "VirtualBox Service" Then
-        RunWait ("cmd /c sc create VBoxDRV binpath= ""%CD%\"& $arch &"\drivers\VBoxDrv\VBoxDrv.sys"" type= kernel start= auto error= normal displayname= PortableVBoxDRV", @ScriptDir, @SW_HIDE)
-        Local $DRV = 1
+      If RegRead ("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxSup", "DisplayName") <> "VirtualBox Service" Then
+        RunWait ("cmd /c sc create VBoxSup binpath= ""%CD%\"& $arch &"\drivers\VBoxSup\VBoxSup.sys"" type= kernel start= auto error= normal displayname= PortableVBoxSup", @ScriptDir, @SW_HIDE)
+        Local $SUP = 1
       Else
-        Local $DRV = 0
+        Local $SUP = 0
       EndIf
 
       If IniRead ($var1, "usb", "key", "NotFound") = 1 Then
@@ -710,8 +710,8 @@ EndIf
         Local $NET = 0
       EndIf
 
-      If $DRV = 1 Then
-        RunWait ("sc start VBoxDRV", @ScriptDir, @SW_HIDE)
+      If $SUP = 1 Then
+        RunWait ("sc start VBoxSup", @ScriptDir, @SW_HIDE)
       EndIf
 
       If $USB = 1 Then
@@ -729,38 +729,26 @@ EndIf
       If $NET = 1 Then
         RunWait ("sc start VBoxNetFlt", @ScriptDir, @SW_HIDE)
       EndIf
-
-      If $CmdLine[0] = 1 Then
-        If FileExists (@ScriptDir&"\data\.VirtualBox") Then
-          Local $UserHome = IniRead ($var1, "userhome", "key", "NotFound")
-          Local $StartVM  = $CmdLine[1]
-          If IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" AND FileExists (@ScriptDir&"\data\.VirtualBox\HardDisks\"&$CmdLine[1]&".vdi") Then
-            RunWait ("cmd /c set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VBoxManage.exe startvm """& $StartVM &"""" , @ScriptDir, @SW_HIDE)
-          Else
-            RunWait ("cmd /c set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VirtualBox.exe", @ScriptDir, @SW_HIDE)
-          EndIf
-        Else
-          RunWait ("cmd /c set VBOX_USER_HOME=%CD%\data\.VirtualBox & .\"& $arch &"\VirtualBox.exe", @ScriptDir, @SW_HIDE)
-        EndIf
-
-        ProcessWaitClose ("VirtualBox.exe")
-        ProcessWaitClose ("VBoxManage.exe")
-      Else
-        If FileExists (@ScriptDir&"\data\.VirtualBox") Then
-          Local $UserHome = IniRead ($var1, "userhome", "key", "NotFound")
-          Local $StartVM  = IniRead ($var1, "startvm", "key", "NotFound")
-          If IniRead ($var1, "startvm", "key", "NotFound") = true Then
-            RunWait ("cmd /C set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VBoxManage.exe startvm """& $StartVM &"""" , @ScriptDir, @SW_HIDE)
-          Else
-            RunWait ("cmd /c set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VirtualBox.exe", @ScriptDir, @SW_HIDE)
-          EndIf
-        Else
-          RunWait ("cmd /c set VBOX_USER_HOME=%CD%\data\.VirtualBox & .\"& $arch &"\VirtualBox.exe", @ScriptDir, @SW_HIDE)
-        EndIf
-
-        ProcessWaitClose ("VirtualBox.exe")
-        ProcessWaitClose ("VBoxManage.exe")
+                        
+      If Not FileExists (@ScriptDir&"\data\.VirtualBox") Then
+        DirCreate (@ScriptDir&"\data\.VirtualBox\")
       EndIf
+
+      Local $UserHome = IniRead ($var1, "userhome", "key", "NotFound")
+      If $CmdLine[0] = 1 And IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" AND FileExists (@ScriptDir&"\data\.VirtualBox\HardDisks\"&$CmdLine[1]&".vdi") Then    
+        Local $StartVM  = $CmdLine[1]      
+        RunWait ("cmd /c set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VBoxManage.exe startvm """& $StartVM &"""" , @ScriptDir, @SW_HIDE) 
+      ElseIf $CmdLine[0] = 0 And IniRead ($var1, "startvm", "key", "NotFound") <> "" Then
+        Local $StartVM  = IniRead ($var1, "startvm", "key", "NotFound")
+        RunWait ("cmd /C set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VBoxManage.exe startvm """& $StartVM &"""" , @ScriptDir, @SW_HIDE)   
+      Else
+        RunWait ("cmd /c set VBOX_USER_HOME="& $UserHome &"& .\"& $arch &"\VirtualBox.exe", @ScriptDir, @SW_HIDE)         
+      EndIf       
+      
+      ProcessWaitClose ("VirtualBox.exe")
+      ProcessWaitClose ("VBoxManage.exe") ; probably no longer used
+      ProcessWaitClose ("VirtualBoxVM.exe")
+      ProcessWaitClose ("VBoxHeadless.exe")
 
       SplashTextOn ("Portable-VirtualBox", IniRead ($var2 & $lng &".ini", "messages", "07", "NotFound"), 220, 40, -1, -1, 1, "arial", 12)
 
@@ -773,17 +761,17 @@ EndIf
       If $PID Then ProcessClose ($PID)
 
       While $timer < 10000 AND $PID
-	$PID = ProcessExists ("VBoxSVC.exe")
-	If $PID Then ProcessClose ($PID)
-	Sleep(1000)
-	$timer += 1000
+        $PID = ProcessExists ("VBoxSVC.exe")
+        If $PID Then ProcessClose ($PID)
+        Sleep(1000)
+        $timer += 1000
       Wend
 
       RunWait ($arch&"\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
       RunWait (@SystemDir&"\regsvr32.exe /S /U "& $arch &"\VBoxC.dll", @ScriptDir, @SW_HIDE)
 
-      If $DRV = 1 Then
-        RunWait ("sc stop VBoxDRV", @ScriptDir, @SW_HIDE)
+      If $SUP = 1 Then
+        RunWait ("sc stop VBoxSup", @ScriptDir, @SW_HIDE)
       EndIf
 
       If $USB = 1 Then
@@ -844,8 +832,8 @@ EndIf
         FileDelete (@SystemDir&"\msvcr80.dll")
       EndIf
 
-      If $DRV = 1 Then
-        RunWait ("sc delete VBoxDRV", @ScriptDir, @SW_HIDE)
+      If $SUP = 1 Then
+        RunWait ("sc delete VBoxSup", @ScriptDir, @SW_HIDE)
       EndIf
 
       If $USB = 1 Then
@@ -899,6 +887,12 @@ Func HideWindows ()
 EndFunc
 
 Func Settings ()
+  $isSettingsWindowVisible = Not $isSettingsWindowVisible; // Toggle window
+  If $isSettingsWindowVisible = False Then
+    ExitGUI()
+    Return
+  EndIf
+
   Opt ("GUIOnEventMode", 1)
 
   Global $Radio1, $Radio2, $Radio3, $Radio4, $Radio5, $Radio6, $Radio7, $Radio8, $Radio9, $Radio10, $Radio11, $Radio12, $Radio13, $Radio14
@@ -916,308 +910,308 @@ Func Settings ()
   GUICtrlCreateTab (0, 0, 577, 296)
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "homeroot-settings", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio1 = GUICtrlCreateRadio ("Radio01", 20, 153, 17, 17)
-    If IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio1 = GUICtrlCreateRadio ("Radio01", 20, 153, 17, 17)
+  If IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio2 = GUICtrlCreateRadio ("Radio02", 20, 185, 17, 17)
-    If IniRead ($var1, "userhome", "key", "NotFound") <> "%CD%\data\.VirtualBox" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio2 = GUICtrlCreateRadio ("Radio02", 20, 185, 17, 17)
+  If IniRead ($var1, "userhome", "key", "NotFound") <> "%CD%\data\.VirtualBox" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "03", "NotFound"), 36, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "04", "NotFound"), 36, 185, 180, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "03", "NotFound"), 36, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "homeroot-settings", "04", "NotFound"), 36, 185, 180, 21)
 
-    If IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" Then
-      $HomeRoot = GUICtrlCreateInput (IniRead ($var2 & $lng &".ini", "homeroot-settings", "05", "NotFound"), 220, 185, 249, 21)
-    Else
-      $User_Home = IniRead ($var1, "userhome", "key", "NotFound")
-      $HomeRoot  = GUICtrlCreateInput ($User_Home, 220, 185, 249, 21)
-    EndIf
+  If IniRead ($var1, "userhome", "key", "NotFound") = "%CD%\data\.VirtualBox" Then
+    $HomeRoot = GUICtrlCreateInput (IniRead ($var2 & $lng &".ini", "homeroot-settings", "05", "NotFound"), 220, 185, 249, 21)
+  Else
+    $User_Home = IniRead ($var1, "userhome", "key", "NotFound")
+    $HomeRoot  = GUICtrlCreateInput ($User_Home, 220, 185, 249, 21)
+  EndIf
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "homeroot-settings", "06", "NotFound"), 476, 185, 81, 21, 0)
-    GUICtrlSetOnEvent (-1, "SRCUserHome")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKUserHome")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "homeroot-settings", "06", "NotFound"), 476, 185, 81, 21, 0)
+  GUICtrlSetOnEvent (-1, "SRCUserHome")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKUserHome")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "startvm-settings", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "startvm-settings", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "startvm-settings", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio3 = GUICtrlCreateRadio ("Radio3", 20, 153, 17, 17)
-    If IniRead ($var1, "startvm", "key", "NotFound") = false Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio3 = GUICtrlCreateRadio ("Radio3", 20, 153, 17, 17)
+  If IniRead ($var1, "startvm", "key", "NotFound") = false Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio4 = GUICtrlCreateRadio ("Radio4", 20, 185, 17, 17)
-    If IniRead ($var1, "startvm", "key", "NotFound") = true Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio4 = GUICtrlCreateRadio ("Radio4", 20, 185, 17, 17)
+  If IniRead ($var1, "startvm", "key", "NotFound") = true Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "startvm-settings", "03", "NotFound"), 36, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "startvm-settings", "04", "NotFound"), 36, 185, 180, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "startvm-settings", "03", "NotFound"), 36, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "startvm-settings", "04", "NotFound"), 36, 185, 180, 21)
 
-    If IniRead ($var1, "startvm", "key", "NotFound") = false Then
-      $VMStart = GUICtrlCreateInput (IniRead ($var2 & $lng &".ini", "startvm-settings", "05", "NotFound"), 220, 185, 249, 21)
-    Else
-      $Start_VM = IniRead ($var1, "startvm", "key", "NotFound")
-      $VMStart  = GUICtrlCreateInput ($Start_VM, 220, 185, 249, 21)
-    EndIf
+  If IniRead ($var1, "startvm", "key", "NotFound") = false Then
+    $VMStart = GUICtrlCreateInput (IniRead ($var2 & $lng &".ini", "startvm-settings", "05", "NotFound"), 220, 185, 249, 21)
+  Else
+    $Start_VM = IniRead ($var1, "startvm", "key", "NotFound")
+    $VMStart  = GUICtrlCreateInput ($Start_VM, 220, 185, 249, 21)
+  EndIf
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "startvm-settings", "06", "NotFound"), 476, 185, 81, 21, 0)
-    GUICtrlSetOnEvent (-1, "SRCStartVM")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKStartVM")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "startvm-settings", "06", "NotFound"), 476, 185, 81, 21, 0)
+  GUICtrlSetOnEvent (-1, "SRCStartVM")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKStartVM")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "hotkeys", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkeys", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "hotkeys", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio5 = GUICtrlCreateRadio ("Radio5", 20, 153, 17, 17)
-    If IniRead ($var1, "hotkeys", "key", "NotFound") = 1 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio5 = GUICtrlCreateRadio ("Radio5", 20, 153, 17, 17)
+  If IniRead ($var1, "hotkeys", "key", "NotFound") = 1 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio6 = GUICtrlCreateRadio ("Radio6", 20, 185, 17, 17)
-    If IniRead ($var1, "hotkeys", "key", "NotFound") = 0 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio6 = GUICtrlCreateRadio ("Radio6", 20, 185, 17, 17)
+  If IniRead ($var1, "hotkeys", "key", "NotFound") = 0 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkeys", "03", "NotFound"), 36, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkeys", "04", "NotFound"), 36, 185, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkeys", "03", "NotFound"), 36, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkeys", "04", "NotFound"), 36, 185, 524, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKHotKeys")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKHotKeys")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "hotkey-settings", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkey-settings", "02", "NotFound"), 16, 40, 546, 60)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "hotkey-settings", "02", "NotFound"), 16, 40, 546, 60)
 
-    $Radio7 = GUICtrlCreateRadio ("Radio7", 20, 112, 17, 17)
-    If IniRead ($var1, "hotkeys", "userkey", "NotFound") = 0 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio7 = GUICtrlCreateRadio ("Radio7", 20, 112, 17, 17)
+  If IniRead ($var1, "hotkeys", "userkey", "NotFound") = 0 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio8 = GUICtrlCreateRadio ("Radio8", 154, 112, 17, 17)
-    If IniRead ($var1, "hotkeys", "userkey", "NotFound") = 1 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio8 = GUICtrlCreateRadio ("Radio8", 154, 112, 17, 17)
+  If IniRead ($var1, "hotkeys", "userkey", "NotFound") = 1 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkey-settings", "03", "NotFound"), 38, 113, 100, 122)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "hotkey-settings", "03", "NotFound"), 38, 113, 100, 122)
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "01", "NotFound") &":", 172, 113, 120, 17)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "02", "NotFound") &":", 172, 133, 120, 17)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "03", "NotFound") &":", 172, 153, 120, 17)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "04", "NotFound") &":", 172, 173, 120, 17)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "05", "NotFound") &":", 172, 193, 120, 17)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "06", "NotFound") &":", 172, 213, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "01", "NotFound") &":", 172, 113, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "02", "NotFound") &":", 172, 133, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "03", "NotFound") &":", 172, 153, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "04", "NotFound") &":", 172, 173, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "05", "NotFound") &":", 172, 193, 120, 17)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "tray", "06", "NotFound") &":", 172, 213, 120, 17)
 
-    GUICtrlCreateLabel ("CTRL +", 318, 113, 44, 17)
-    GUICtrlCreateLabel ("CTRL +", 318, 133, 44, 17)
-    GUICtrlCreateLabel ("CTRL +", 318, 153, 44, 17)
-    GUICtrlCreateLabel ("CTRL +", 318, 173, 44, 17)
-    GUICtrlCreateLabel ("CTRL +", 318, 193, 44, 17)
-    GUICtrlCreateLabel ("CTRL +", 318, 213, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 113, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 133, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 153, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 173, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 193, 44, 17)
+  GUICtrlCreateLabel ("CTRL +", 318, 213, 44, 17)
 
-    GUICtrlCreateLabel ("ALT +", 395, 113, 44, 17)
-    GUICtrlCreateLabel ("ALT +", 395, 133, 44, 17)
-    GUICtrlCreateLabel ("ALT +", 395, 153, 44, 17)
-    GUICtrlCreateLabel ("ALT +", 395, 173, 44, 17)
-    GUICtrlCreateLabel ("ALT +", 395, 193, 44, 17)
-    GUICtrlCreateLabel ("ALT +", 395, 213, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 113, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 133, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 153, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 173, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 193, 44, 17)
+  GUICtrlCreateLabel ("ALT +", 395, 213, 44, 17)
 
-    GUICtrlCreateLabel ("SHIFT +", 460, 113, 44, 17)
-    GUICtrlCreateLabel ("SHIFT +", 460, 133, 44, 17)
-    GUICtrlCreateLabel ("SHIFT +", 460, 153, 44, 17)
-    GUICtrlCreateLabel ("SHIFT +", 460, 173, 44, 17)
-    GUICtrlCreateLabel ("SHIFT +", 460, 193, 44, 17)
-    GUICtrlCreateLabel ("SHIFT +", 460, 213, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 113, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 133, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 153, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 173, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 193, 44, 17)
+  GUICtrlCreateLabel ("SHIFT +", 460, 213, 44, 17)
 
-    $Checkbox01 = GUICtrlCreateCheckbox ("Checkbox01", 302, 112, 17, 17)
-    If IniRead ($var1, "hotkeys", "01", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox02 = GUICtrlCreateCheckbox ("Checkbox02", 302, 132, 17, 17)
-    If IniRead ($var1, "hotkeys", "02", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox03 = GUICtrlCreateCheckbox ("Checkbox03", 302, 152, 17, 17)
-    If IniRead ($var1, "hotkeys", "03", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox04 = GUICtrlCreateCheckbox ("Checkbox04", 302, 172, 17, 17)
-    If IniRead ($var1, "hotkeys", "04", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox05 = GUICtrlCreateCheckbox ("Checkbox05", 302, 192, 17, 17)
-    If IniRead ($var1, "hotkeys", "05", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox06 = GUICtrlCreateCheckbox ("Checkbox06", 302, 212, 17, 17)
-    If IniRead ($var1, "hotkeys", "06", "NotFound") = "^" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Checkbox01 = GUICtrlCreateCheckbox ("Checkbox01", 302, 112, 17, 17)
+  If IniRead ($var1, "hotkeys", "01", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox02 = GUICtrlCreateCheckbox ("Checkbox02", 302, 132, 17, 17)
+  If IniRead ($var1, "hotkeys", "02", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox03 = GUICtrlCreateCheckbox ("Checkbox03", 302, 152, 17, 17)
+  If IniRead ($var1, "hotkeys", "03", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox04 = GUICtrlCreateCheckbox ("Checkbox04", 302, 172, 17, 17)
+  If IniRead ($var1, "hotkeys", "04", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox05 = GUICtrlCreateCheckbox ("Checkbox05", 302, 192, 17, 17)
+  If IniRead ($var1, "hotkeys", "05", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox06 = GUICtrlCreateCheckbox ("Checkbox06", 302, 212, 17, 17)
+  If IniRead ($var1, "hotkeys", "06", "NotFound") = "^" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Checkbox07 = GUICtrlCreateCheckbox ("Checkbox07", 378, 112, 17, 17)
-    If IniRead ($var1, "hotkeys", "07", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox08 = GUICtrlCreateCheckbox ("Checkbox08", 378, 132, 17, 17)
-    If IniRead ($var1, "hotkeys", "08", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox09 = GUICtrlCreateCheckbox ("Checkbox09", 378, 152, 17, 17)
-    If IniRead ($var1, "hotkeys", "09", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox10 = GUICtrlCreateCheckbox ("Checkbox10", 378, 172, 17, 17)
-    If IniRead ($var1, "hotkeys", "10", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox11 = GUICtrlCreateCheckbox ("Checkbox11", 378, 192, 17, 17)
-    If IniRead ($var1, "hotkeys", "11", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox12 = GUICtrlCreateCheckbox ("Checkbox12", 378, 212, 17, 17)
-    If IniRead ($var1, "hotkeys", "12", "NotFound") = "!" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Checkbox07 = GUICtrlCreateCheckbox ("Checkbox07", 378, 112, 17, 17)
+  If IniRead ($var1, "hotkeys", "07", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox08 = GUICtrlCreateCheckbox ("Checkbox08", 378, 132, 17, 17)
+  If IniRead ($var1, "hotkeys", "08", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox09 = GUICtrlCreateCheckbox ("Checkbox09", 378, 152, 17, 17)
+  If IniRead ($var1, "hotkeys", "09", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox10 = GUICtrlCreateCheckbox ("Checkbox10", 378, 172, 17, 17)
+  If IniRead ($var1, "hotkeys", "10", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox11 = GUICtrlCreateCheckbox ("Checkbox11", 378, 192, 17, 17)
+  If IniRead ($var1, "hotkeys", "11", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox12 = GUICtrlCreateCheckbox ("Checkbox12", 378, 212, 17, 17)
+  If IniRead ($var1, "hotkeys", "12", "NotFound") = "!" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Checkbox13 = GUICtrlCreateCheckbox ("Checkbox13", 444, 112, 17, 17)
-    If IniRead ($var1, "hotkeys", "13", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox14 = GUICtrlCreateCheckbox ("Checkbox14", 444, 132, 17, 17)
-    If IniRead ($var1, "hotkeys", "14", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox15 = GUICtrlCreateCheckbox ("Checkbox15", 444, 152, 17, 17)
-    If IniRead ($var1, "hotkeys", "15", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox16 = GUICtrlCreateCheckbox ("Checkbox16", 444, 172, 17, 17)
-    If IniRead ($var1, "hotkeys", "16", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox17 = GUICtrlCreateCheckbox ("Checkbox17", 444, 192, 17, 17)
-    If IniRead ($var1, "hotkeys", "17", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
-    $Checkbox18 = GUICtrlCreateCheckbox ("Checkbox18", 444, 212, 17, 17)
-    If IniRead ($var1, "hotkeys", "18", "NotFound") = "+" Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Checkbox13 = GUICtrlCreateCheckbox ("Checkbox13", 444, 112, 17, 17)
+  If IniRead ($var1, "hotkeys", "13", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox14 = GUICtrlCreateCheckbox ("Checkbox14", 444, 132, 17, 17)
+  If IniRead ($var1, "hotkeys", "14", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox15 = GUICtrlCreateCheckbox ("Checkbox15", 444, 152, 17, 17)
+  If IniRead ($var1, "hotkeys", "15", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox16 = GUICtrlCreateCheckbox ("Checkbox16", 444, 172, 17, 17)
+  If IniRead ($var1, "hotkeys", "16", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox17 = GUICtrlCreateCheckbox ("Checkbox17", 444, 192, 17, 17)
+  If IniRead ($var1, "hotkeys", "17", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
+  $Checkbox18 = GUICtrlCreateCheckbox ("Checkbox18", 444, 212, 17, 17)
+  If IniRead ($var1, "hotkeys", "18", "NotFound") = "+" Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Input1 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "19", "NotFound"), 524, 111, 24, 21)
-    $Input2 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "20", "NotFound"), 524, 131, 24, 21)
-    $Input3 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "21", "NotFound"), 524, 151, 24, 21)
-    $Input4 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "22", "NotFound"), 524, 171, 24, 21)
-    $Input5 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "23", "NotFound"), 524, 191, 24, 21)
-    $Input6 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "24", "NotFound"), 524, 211, 24, 21)
+  $Input1 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "19", "NotFound"), 524, 111, 24, 21)
+  $Input2 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "20", "NotFound"), 524, 131, 24, 21)
+  $Input3 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "21", "NotFound"), 524, 151, 24, 21)
+  $Input4 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "22", "NotFound"), 524, 171, 24, 21)
+  $Input5 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "23", "NotFound"), 524, 191, 24, 21)
+  $Input6 = GUICtrlCreateInput (IniRead ($var1, "hotkeys", "24", "NotFound"), 524, 211, 24, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKHotKeysSet")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKHotKeysSet")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "usb", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "usb", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "usb", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio9 = GUICtrlCreateRadio ("$Radio9", 20, 153, 17, 17)
-    If IniRead ($var1, "usb", "key", "NotFound") = 0 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio9 = GUICtrlCreateRadio ("$Radio9", 20, 153, 17, 17)
+  If IniRead ($var1, "usb", "key", "NotFound") = 0 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio10 = GUICtrlCreateRadio ("$Radio10", 20, 185, 17, 17)
-    If IniRead ($var1, "usb", "key", "NotFound") = 1 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio10 = GUICtrlCreateRadio ("$Radio10", 20, 185, 17, 17)
+  If IniRead ($var1, "usb", "key", "NotFound") = 1 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "usb", "03", "NotFound"), 40, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "usb", "04", "NotFound"), 40, 185, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "usb", "03", "NotFound"), 40, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "usb", "04", "NotFound"), 40, 185, 524, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKUSB")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKUSB")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "net", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "net", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "net", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio11 = GUICtrlCreateRadio ("$Radio11", 20, 153, 17, 17)
-    If IniRead ($var1, "net", "key", "NotFound") = 0 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio11 = GUICtrlCreateRadio ("$Radio11", 20, 153, 17, 17)
+  If IniRead ($var1, "net", "key", "NotFound") = 0 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio12 = GUICtrlCreateRadio ("$Radio12", 20, 185, 17, 17)
-    If IniRead ($var1, "net", "key", "NotFound") = 1 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio12 = GUICtrlCreateRadio ("$Radio12", 20, 185, 17, 17)
+  If IniRead ($var1, "net", "key", "NotFound") = 1 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "net", "03", "NotFound"), 40, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "net", "04", "NotFound"), 40, 185, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "net", "03", "NotFound"), 40, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "net", "04", "NotFound"), 40, 185, 524, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKNet")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKNet")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "language-settings", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "language-settings", "02", "NotFound"), 16, 40, 546, 105)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "language-settings", "03", "NotFound"), 26, 185, 180, 21)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "language-settings", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "language-settings", "03", "NotFound"), 26, 185, 180, 21)
 
-    $StartLng = GUICtrlCreateInput (IniRead ($var1, "language", "key", "NotFound"), 210, 185, 259, 21)
+  $StartLng = GUICtrlCreateInput (IniRead ($var1, "language", "key", "NotFound"), 210, 185, 259, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "language-settings", "04", "NotFound"), 476, 185, 81, 21, 0)
-    GUICtrlSetOnEvent (-1, "SRCLanguage")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKLanguage")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "language-settings", "04", "NotFound"), 476, 185, 81, 21, 0)
+  GUICtrlSetOnEvent (-1, "SRCLanguage")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKLanguage")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "update", "01", "NotFound"))
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "update", "02", "NotFound"), 16, 40, 546, 105)
+  GUICtrlCreateLabel   (IniRead ($var2 & $lng &".ini", "update", "02", "NotFound"), 16, 40, 546, 105)
 
-    $Radio13 = GUICtrlCreateRadio ("$Radio13", 20, 153, 17, 17)
-    If IniRead ($var1, "update", "key", "NotFound") = 0 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio13 = GUICtrlCreateRadio ("$Radio13", 20, 153, 17, 17)
+  If IniRead ($var1, "update", "key", "NotFound") = 0 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    $Radio14 = GUICtrlCreateRadio ("$Radio14", 20, 185, 17, 17)
-    If IniRead ($var1, "update", "key", "NotFound") = 1 Then
-      GUICtrlSetState (-1, $GUI_CHECKED)
-    EndIf
+  $Radio14 = GUICtrlCreateRadio ("$Radio14", 20, 185, 17, 17)
+  If IniRead ($var1, "update", "key", "NotFound") = 1 Then
+    GUICtrlSetState (-1, $GUI_CHECKED)
+  EndIf
 
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "update", "03", "NotFound"), 40, 153, 524, 21)
-    GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "update", "04", "NotFound"), 40, 185, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "update", "03", "NotFound"), 40, 153, 524, 21)
+  GUICtrlCreateLabel (IniRead ($var2 & $lng &".ini", "update", "04", "NotFound"), 40, 185, 524, 21)
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "OKUpdate")
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "02", "NotFound"), 112, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "OKUpdate")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 336, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "about", "01", "NotFound"))
-    GUICtrlCreateLabel (". : Portable-VirtualBox Launcher v"& $version &" : .", 100, 40, 448, 26)
-    GUICtrlSetFont (-1, 14, 800, 4, "Arial")
-    GUICtrlCreateLabel("Download and Support: http://www.win-lite.de/wbb/index.php?page=Board&&&boardID=153", 40, 70, 500, 20)
-    GUICtrlSetFont (-1, 8, 800, 0, "Arial")
-    GUICtrlCreateLabel ("VirtualBox is a family of powerful x86 virtualization products for enterprise as well as home use. Not only is VirtualBox an extremely feature rich, high performance product for enterprise customers, it is also the only professional solution that is freely available as Open Source Software under the terms of the GNU General Public License (GPL).", 16, 94, 546, 55)
-    GUICtrlSetFont (-1, 8, 400, 0, "Arial")
-    GUICtrlCreateLabel ("Download and Support: http://www.virtualbox.org", 88, 133, 300, 14)
-    GUICtrlSetFont (-1, 8, 800, 0, "Arial")
-    GUICtrlCreateLabel ("Presently, VirtualBox runs on Windows, Linux, Macintosh and OpenSolaris hosts and supports a large number of guest operating systems including but not limited to Windows (NT 4.0, 2000, XP, Server 2003, Vista), DOS/Windows 3.x, Linux (2.4 and 2.6), and OpenBSD.", 16, 149, 546, 40)
-    GUICtrlSetFont (-1, 8, 400, 0, "Arial")
-    GUICtrlCreateLabel ("VirtualBox is being actively developed with frequent releases and has an ever growing list of features, supported guest operating systems and platforms it runs on. VirtualBox is a community effort backed by a dedicated company: everyone is encouraged to contribute while Sun ensures the product always meets professional quality criteria.", 16, 192, 546, 40)
-    GUICtrlSetFont (-1, 8, 400, 0, "Arial")
+  GUICtrlCreateLabel (". : Portable-VirtualBox Launcher v"& $version &" : .", 100, 40, 448, 26)
+  GUICtrlSetFont (-1, 14, 800, 4, "Arial")
+  GUICtrlCreateLabel("Download and Support: http://www.win-lite.de/wbb/index.php?page=Board&&&boardID=153", 40, 70, 500, 20)
+  GUICtrlSetFont (-1, 8, 800, 0, "Arial")
+  GUICtrlCreateLabel ("VirtualBox is a family of powerful x86 virtualization products for enterprise as well as home use. Not only is VirtualBox an extremely feature rich, high performance product for enterprise customers, it is also the only professional solution that is freely available as Open Source Software under the terms of the GNU General Public License (GPL).", 16, 94, 546, 55)
+  GUICtrlSetFont (-1, 8, 400, 0, "Arial")
+  GUICtrlCreateLabel ("Download and Support: http://www.virtualbox.org", 88, 133, 300, 14)
+  GUICtrlSetFont (-1, 8, 800, 0, "Arial")
+  GUICtrlCreateLabel ("Presently, VirtualBox runs on Windows, Linux, Macintosh and OpenSolaris hosts and supports a large number of guest operating systems including but not limited to Windows (NT 4.0, 2000, XP, Server 2003, Vista), DOS/Windows 3.x, Linux (2.4 and 2.6), and OpenBSD.", 16, 149, 546, 40)
+  GUICtrlSetFont (-1, 8, 400, 0, "Arial")
+  GUICtrlCreateLabel ("VirtualBox is being actively developed with frequent releases and has an ever growing list of features, supported guest operating systems and platforms it runs on. VirtualBox is a community effort backed by a dedicated company: everyone is encouraged to contribute while Sun ensures the product always meets professional quality criteria.", 16, 192, 546, 40)
+  GUICtrlSetFont (-1, 8, 400, 0, "Arial")
 
-    GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 236, 240, 129, 25, 0)
-    GUICtrlSetOnEvent (-1, "ExitGUI")
+  GUICtrlCreateButton (IniRead ($var2 & $lng &".ini", "messages", "03", "NotFound"), 236, 240, 129, 25, 0)
+  GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUISetState ()
 EndFunc
@@ -1471,10 +1465,10 @@ Func OKLanguage ()
     MsgBox (0, IniRead ($var2 & $lng &".ini", "messages", "01", "NotFound"), IniRead ($var2 & $lng &".ini", "oklanguage", "01", "NotFound"))
   Else
     IniWrite ($var1, "language", "key", GUICtrlRead ($StartLng))
-	If IniRead ($var1, "lang", "key", "NotFound") = 1 Then
+    If IniRead ($var1, "lang", "key", "NotFound") = 1 Then
       MsgBox (0, IniRead ($var2 & $lng &".ini", "messages", "04", "NotFound"), IniRead ($var2 & $lng &".ini", "messages", "05", "NotFound"))
-	EndIf
-	$cl = 0
+    EndIf
+    $cl = 0
   EndIf
 EndFunc
 
@@ -1508,9 +1502,9 @@ Func DownloadFile ()
     Sleep (250)
     Local $bytes = 0
     $bytes = InetGetInfo($download1, 0)
-	$total_bytes = InetGetInfo($download1, 1)
+    $total_bytes = InetGetInfo($download1, 1)
     GUICtrlSetData ($Input200, IniRead ($var2 & $lng &".ini", "status", "01", "NotFound") &" "& $download2 & @LF & DisplayDownloadStatus($bytes,$total_bytes) )
-	;GUICtrlSetData($ProgressBar1,Round(100*$bytes/$total_bytes)) ; <<<TODO: Ticket 3509714
+    ;GUICtrlSetData($ProgressBar1,Round(100*$bytes/$total_bytes)) ; <<<TODO: Ticket 3509714
   Until InetGetInfo ($download1, 2)
   InetClose ($download1)
   Local $download3 = InetGet (IniRead (@ScriptDir&"\data\settings\vboxinstall.ini", "download", "key2", "NotFound"), $pwd&"\Extension", 1, 1)
@@ -1520,7 +1514,7 @@ Func DownloadFile ()
     Sleep (250)
     Local $bytes = 0
     $bytes = InetGetInfo($download3, 0)
-	$total_bytes = InetGetInfo($download3, 1)
+    $total_bytes = InetGetInfo($download3, 1)
     GUICtrlSetData ($Input200, $download4 & @LF & DisplayDownloadStatus($bytes,$total_bytes))
   Until InetGetInfo ($download3, 2)
   InetClose ($download3)
@@ -1532,20 +1526,20 @@ Func DownloadFile ()
 EndFunc
 
 Func DisplayDownloadStatus($downloaded_bytes,$total_bytes)
-	if $total_bytes > 0 Then
-		Return RoundForceDecimalMB($downloaded_bytes)& "MB / "&RoundForceDecimalMB($total_bytes)&"MB ("&Round(100*$downloaded_bytes/$total_bytes)&"%)"
-	Else
-		Return RoundForceDecimalMB($downloaded_bytes)& "MB"
-	EndIf
+  if $total_bytes > 0 Then
+      Return RoundForceDecimalMB($downloaded_bytes)& "MB / "&RoundForceDecimalMB($total_bytes)&"MB ("&Round(100*$downloaded_bytes/$total_bytes)&"%)"
+  Else
+      Return RoundForceDecimalMB($downloaded_bytes)& "MB"
+  EndIf
 EndFunc
 
 Func RoundForceDecimalMB($number)
-	$rounded = Round($number/1048576, 1)
-	If Not StringInStr($rounded, ".") Then
-		Return $rounded & ".0"
-	Else
-		Return $rounded
-	EndIf
+  $rounded = Round($number/1048576, 1)
+  If Not StringInStr($rounded, ".") Then
+      Return $rounded & ".0"
+  Else
+      Return $rounded
+  EndIf
 EndFunc   ;==>RoundForceDecimal
 
 Func SearchFile ()
@@ -1617,7 +1611,7 @@ Func UseSettings ()
   If GUICtrlRead ($Checkbox120) = $GUI_CHECKED Then
     GUICtrlSetData ($Input200, @LF & IniRead ($var2 & $lng &".ini", "status", "06", "NotFound"))
     If FileExists (@ScriptDir&"\app32") AND GUICtrlRead ($Checkbox100) = $GUI_CHECKED Then
-	  ; Thibaut : some files will trigger Virus alerts if compressed ( VBoxTestOGL.exe and VBoxNetDHCP.exe)
+      ; Thibaut : some files will trigger Virus alerts if compressed ( VBoxTestOGL.exe and VBoxNetDHCP.exe)
       FileCopy (@ScriptDir&"\data\tools\upx.exe", @ScriptDir&"\app32")
       RunWait ("cmd /c upx VRDPAuth.dll", @ScriptDir&"\app32", @SW_HIDE)
       RunWait ("cmd /c upx VirtualBox.exe", @ScriptDir&"\app32", @SW_HIDE)
@@ -1834,45 +1828,45 @@ EndFunc
 
 ; Check if virtualbox is installed and run from it
 Func HybridMode()
-	if @OSArch="X64" Then
-		$append_arch="64"
-	Else
-		$append_arch=""
-	EndIf
+  if @OSArch="X64" Then
+    $append_arch="64"
+  Else
+    $append_arch=""
+  EndIf
 
-	; Version of VirtualBox 4.X
-	$version_new = RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","Version")
+  ; Version of VirtualBox 4.X
+  $version_new = RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","Version")
 
-	; Since 4.0.8 ... Version is in VersionExt key in registry
-	if $version_new = "%VER%" Then
-		$version_new = RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","VersionExt")
-	EndIf
+  ; Since 4.0.8 ... Version is in VersionExt key in registry
+  if $version_new = "%VER%" Then
+    $version_new = RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","VersionExt")
+  EndIf
 
-	; Version of VirtualBox 3.X if any is installed => Cannot run Portable 4.X or it will corrupt it
-	$version_old = RegRead("HKLM"&$append_arch&"\SOFTWARE\Sun\VirtualBox","Version")
+  ; Version of VirtualBox 3.X if any is installed => Cannot run Portable 4.X or it will corrupt it
+  $version_old = RegRead("HKLM"&$append_arch&"\SOFTWARE\Sun\VirtualBox","Version")
 
-	; if old version => Exit to avoid corruption of services
-	if ($version_new <> "" AND Int(StringLeft($version_new,1))<4 ) OR $version_old <> "" Then
-		MsgBox(16,"Sorry","Please update your version of VirtualBox to 4.X or uninstall it from your computer to be able to run this portable version"&@CRLF&@CRLF&"This is a security in order to avoid corrupting your current installed version."&@CRLF&@CRLF &"Thank you for your comprehension.")
-		Exit
-	EndIf
+  ; if old version => Exit to avoid corruption of services
+  if ($version_new <> "" AND Int(StringLeft($version_new,1))<4 ) OR $version_old <> "" Then
+    MsgBox(16,"Sorry","Please update your version of VirtualBox to 4.X or uninstall it from your computer to be able to run this portable version"&@CRLF&@CRLF&"This is a security in order to avoid corrupting your current installed version."&@CRLF&@CRLF &"Thank you for your comprehension.")
+    Exit
+  EndIf
 
-	; Setting VBOX_USER_HOME to portable virtualbox directory (VM settings stays in this one)
-	EnvSet("VBOX_USER_HOME",@ScriptDir&"\data\.VirtualBox")
+  ; Setting VBOX_USER_HOME to portable virtualbox directory (VM settings stays in this one)
+  EnvSet("VBOX_USER_HOME",@ScriptDir&"\data\.VirtualBox")
 
-	; Testing if major version of regular vbox is 4 then running from it
-	If $version_new <> "" AND StringLeft($version_new,1)>=4 Then
+  ; Testing if major version of regular vbox is 4 then running from it
+  If $version_new <> "" AND StringLeft($version_new,1)>=4 Then
 
-		; Getting the installation directory of regular VirtualBox from registry
-		$nonportable_install_dir=RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","InstallDir")
+    ; Getting the installation directory of regular VirtualBox from registry
+    $nonportable_install_dir=RegRead("HKLM"&$append_arch&"\SOFTWARE\Oracle\VirtualBox","InstallDir")
 
-		if $CmdLine[0] = 1 Then
-			Run('cmd /c ""'&$nonportable_install_dir&'VBoxManage.exe" startvm "'&$CmdLine[1]&'""',@ScriptDir,@SW_HIDE)
-		Else
-			Run($nonportable_install_dir&"VirtualBox.exe")
-		EndIf
+    if $CmdLine[0] = 1 Then
+        Run('cmd /c ""'&$nonportable_install_dir&'VBoxManage.exe" startvm "'&$CmdLine[1]&'""',@ScriptDir,@SW_HIDE)
+    Else
+        Run($nonportable_install_dir&"VirtualBox.exe")
+    EndIf
 
-		; Does not need to wait since it's a regular version of VirtualBox
-		Exit
-	EndIf
+    ; Does not need to wait since it's a regular version of VirtualBox
+    Exit
+  EndIf
 EndFunc
