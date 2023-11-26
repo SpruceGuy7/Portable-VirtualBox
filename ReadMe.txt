@@ -1,52 +1,52 @@
-. : Portable VirtualBox : . 
+. : Portable VirtualBox7 : . 
 
-Description: Only start the Portable-VirtualBox.exe and all settings
-             becomes automatically made. It must not be manually
+Description: Only start the Portable-VirtualBox.exe as all settings
+             are automatically made. It must not be manually
              edited.
 
 Features of starter:
 
-- downloader and extractor for the installation file contain
-- SplashScreen to start and end (with it one sees, which pass
-  something) 
+- downloads and extracts the installation file contain within VirtualBox
+- SplashScreen shows on startup and closing Portable-VirtualBox 
+  (includes current VirtualBox compatible version) 
 - HotKeys (STRG+1 bis STRG+6)
 - HotKeys can be now self selected
 - Tray-Menu (multilanguage)
 - settings and languages saved in *.ini-files
-- hide of the VM and of the manager in tray
+- hide the VM and the manager in tray
 - change the homefolder, start-VM, hotkeys and language with
   mouseclick (multilanguage)
 - start of VirtualBox-Manager with parameter (Portable-VirtualBox.exe
   "VM")
 - all absolute paths in the VirtualBox.xml are replaced automatically
   by relative paths
-- examined to VirtaulBox-files exists
+- examine if VirtaulBox-files already exists
 - a.o.f.
 
-Note: VirtualBox needs at least main user rights, there 4 Services
-      (VBoxDRV, VBoxUSBMon and if not already installs VBoxUSB,
-      the VBoxNetFLT and sun_VboxNetFLT) to be furnished and
-      VirtualBox must in " Ring-3" - Mode is initiated. The drivers
-      the network become with snetcfg.exe (from the ms DDK 2003)
-      merged. So that they are loaded, must into that Attitudes of
-      Portable-VirtualBox, under the rider " NET" , this to be
-      selected. For security, which one installs, must for the
-      installation be agreed. After terminating Portable-VirtualBox
-      the drivers become and files again removes! 
+Note: VirtualBox needs at least main user rights, there are 4 Services
+      (VBoxSUP, VBoxUSBMon and if not already installed VBoxUSB,
+      the VBoxNetFLT and sun_VboxNetFLT) to be furnished.
+      VirtualBox must have " Ring-3" - Mode initiated. The drivers
+      for the network come from snetcfg.exe (from the ms DDK 2003)
+      merge. So that they are loaded, they must be added into the Attitudes of
+      Portable-VirtualBox, under the rider " NET" , for them to be
+      selected. For security, which one installs, must be agreed for the
+      installation. After terminating Portable-VirtualBox
+      the drivers and files are removed again! 
 
       Thus the NAT network functions and thus those shared-folders,
-      must be installed the guest-extensions.
+      must be installed in the guest-extensions.
 
-      Who wants to save some more place, knows all language files
-      except that you which necessarily and the documentation delete 
-      Again approx. 9MB saves. The language files are in the folder:
+      Who wants to save some more space, all language files
+      except that of which you necessarily need and the documentation
+      can be deleted saving you approx. 9MB. The language files are in the folder:
       app..\nls and the documentation in the folder: app..\doc.
 
       If VM runs you must press "Host-Key" (right CTRL-Key) in order
       to be able to use the Hotkeys. Since the focus lies then on the
       VM!
 
-Network support: 1. to download of Portable-VirtualBox
+Network support: 1. to download Portable-VirtualBox
                  2. unpack from Portable-VirtualBox
                  3. start from Portable-VirtualBox
                  4. attitudes open (Tray --> attitudes, CTRL+5)
@@ -61,19 +61,38 @@ Network support: 1. to download of Portable-VirtualBox
                  10. attitudes make
                  11. FINISHED
 
-Important: No files became of VirtualBox (https://www.virtualbox.org)
-           modifies or otherwise changed. The files became only
-           unpacked ones and with UPX (http://upx.sourceforge.net) or
-           MPRESS (http://www.matcode.com/mpress.htm) packed, in
-           order to save storage location!
+Important: No files of VirtualBox (https://www.virtualbox.org) are
+           modified or otherwise changed. The files are only
+           unpacked from the VirtualBox installer with UPX (http://upx.sourceforge.net) 
+           or are packed with MPRESS (http://www.matcode.com/mpress.htm), when used in
+           order to save storage space!
 
-Download and support:
-http://www.vbox.me/
+Support Documentation: 
+http://www.vbox.me/ 
 
-Languages of Launcher: English, German, Portuguese, Spanish, French,
-                       Italian, Russian, Ukrainian, Japanese
+
+Languages of Launcher: 
+English, German, Portuguese, Spanish, French, Italian, Russian, Ukrainian, Japanese
 
 Changelog of Starter:
+----------------------------------------------------------------------------------
+CURRENT SPRUCEGUY7 VERSIONS 
+----------------------------------------------------------------------------------
+
+Version 7.0.12.0
+- Versioning changed to run inline with VirtualBox release version.
+- Updated source code to support VirtualBox v7 and above.
+- Updated SplashScreen.jpg to include current VirtualBox version.
+- Updated english language files for easier readability.
+- Updated build.bat to find more program locations for AutoIT automatically
+- Updated build.bat to exclude SOURCE folder in final release. 
+- Updated build.bat to correctly add icon to archive using Resource Hacker.
+- Removed LiesMich.txt for cleaner directory structure (and my preference).
+- Moved ReadMe.txt to the DATA folder for a cleaner directory structure.
+
+----------------------------------------------------------------------------------
+PREVIOUS VBOXME VERSIONS 
+----------------------------------------------------------------------------------
 
 Version 6.4.10
 - Install file is now digitally signed for added security. Signer is
