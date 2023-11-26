@@ -29,6 +29,12 @@ IF DEFINED aut2exe (
 )
 
 rem Try to find the aut2exe path.
+set "PPATH=%ProgramFiles(x86)%\AutoIt3\Aut2Exe\Aut2exe_x64.exe"
+IF exist "%PPATH%" (
+    set "aut2exe=%PPATH%"
+	goto done_aut2exe
+) 
+
 set "PPATH=%ProgramFiles%\AutoIt3\Aut2Exe\aut2exe.exe"
 IF exist "%PPATH%" (
     set "aut2exe=%PPATH%"
@@ -157,7 +163,7 @@ rem Create build and release folders if needed.
 if not exist "%build_folder%\Portable-VirtualBox" md "%build_folder%\Portable-VirtualBox"
 if not exist "%release_folder%" md "%release_folder%"
 
-rem Make a copy of the file for easy compression later.
+rem Make a copy of the files for easy compression later.
 xcopy /i /e "%input_folder%data" "%build_folder%\Portable-VirtualBox\data\"
 xcopy /i /e "%input_folder%source" "%build_folder%\Portable-VirtualBox\source\"
 xcopy "%input_folder%LiesMich.txt" "%build_folder%\Portable-VirtualBox\"
@@ -176,13 +182,14 @@ IF "%~1"=="-s" (
 	"%signtool%" sign /a "%build_folder%\Portable-VirtualBox\Portable-VirtualBox.exe"
 )
 
-rem Make a release by packing the exe, data and source code into a self-extracting archive.
+rem Make a release by packing the exe and data into a self-extracting archive but dont include the source.
 pushd %build_folder%
-"%sevenzip%" a -r -x!.git -sfx7z.sfx "%release_folder%\Portable-VirtualBox.tmp" "Portable-VirtualBox"
+"%sevenzip%" a -r -x!.git -x!source -sfx7z.sfx "%release_folder%\Portable-VirtualBox.tmp" "Portable-VirtualBox"
 popd
 
 rem Change the icon on the self-extracting archive.
-"%reshack%" -addoverwrite "%release_folder%\Portable-VirtualBox.tmp", "%release_folder%\%output_name%", "%build_folder%\Portable-VirtualBox\source\VirtualBox.ico",ICONGROUP,1,1033
+"%reshack%" -open "%release_folder%\Portable-VirtualBox.tmp" -save "%release_folder%\%output_name%" -action addoverwrite -res "%build_folder%\Portable-VirtualBox\source\VirtualBox.ico" -mask ICONGROUP,1,1033
+
 
 del /q "%release_folder%\Portable-VirtualBox.tmp"
 
