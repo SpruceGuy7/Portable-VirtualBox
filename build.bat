@@ -18,7 +18,7 @@ rem Setting up the different folders used for building. %~dp0 is the folder of t
 set "input_folder=%~dp0"
 set "build_folder=%input_folder%\build\source"
 set "release_folder=%input_folder%\build\release"
-set "output_name=Portable-VirtualBox7_v7.0.12.1.exe"
+set "output_name=Portable-VirtualBox7_v7.0.12.2.exe"
 
 
 rem Find path for aut2exe
