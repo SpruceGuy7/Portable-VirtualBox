@@ -1,8 +1,10 @@
 ; Language       : multilanguage
-; Author         : Michael Meyer (michaelm_007) et al.
+; Original Author: Michael Meyer (michaelm_007) et al.
 ; e-Mail         : email.address@gmx.de
 ; License        : http://creativecommons.org/licenses/by-nc-sa/3.0/
-; Version        : 7.0.12.1
+; Updated by     : SpruceGuy7 @ SpruceIT
+; Reason		     : Edited to run VirtualBox v7.x.x onwards.
+; Version        : 7.0.12.2
 ; Download       : http://www.spruceit.co.uk
 ; Support        : http://www.spruceit.co.uk
 
@@ -41,7 +43,7 @@ TraySetClick (16)
 TraySetState ()
 TraySetToolTip ("Portable-VirtualBox7")
 
-Global $version = "7.0.12.1"
+Global $version = "7.0.12.2"
 Global $var1 = @ScriptDir&"\data\settings\settings.ini"
 Global $var2 = @ScriptDir&"\data\language\"
 Global $lng = IniRead ($var1, "language", "key", "NotFound")
