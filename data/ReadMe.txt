@@ -78,6 +78,12 @@ Changelog of Starter:
 ----------------------------------------------------------------------------------
 CURRENT SPRUCEGUY7 VERSIONS 
 ----------------------------------------------------------------------------------
+Version 7.0.12.2
+- Updated build.bat file versioning to v7.0.12.2
+- Updated language files to reflect version base prefix (7)
+- Updated source code to reflect version base prefix (7)
+- Updated source code for Updates
+- Updated UPX.exe v3 to v4.2.1
 
 Version 7.0.12.1
 - Updated build.bat removing xcopy references to LiesMich.txt & ReadMe.txt.
