@@ -4,17 +4,17 @@
 ; Author         : Michael Meyer (michaelm_007)
 ; e-Mail         : email.address@gmx.de
 ; License        : http://creativecommons.org/licenses/by-nc-sa/3.0/
-; Version        : 1.0.0
-; Download       : http://www.vbox.me
-; Support        : http://www.win-lite.de/wbb/index.php?page=Board&boardID=153
+; Version        : 7.0.12.1
+; Download       : http://www.spruceit.co.uk
+; Support        : http://www.spruceit.co.uk
 
 #NoTrayIcon
 #RequireAdmin
 
 Sleep (2000)
 
-FileMove (@ScriptDir&"\Portable-VirtualBox.exe", @ScriptDir&"\Portable-VirtualBox.exe_BAK", 9)
-FileMove (@ScriptDir&"\Portable-VirtualBox.exe_NEW", @ScriptDir&"\Portable-VirtualBox.exe", 9)
+FileMove (@ScriptDir&"\Portable-VirtualBox7.exe", @ScriptDir&"\Portable-VirtualBox7.exe_BAK", 9)
+FileMove (@ScriptDir&"\Portable-VirtualBox7.exe_NEW", @ScriptDir&"\Portable-VirtualBox7.exe", 9)
 
 Sleep (2000)
 
