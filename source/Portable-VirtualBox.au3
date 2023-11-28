@@ -2,9 +2,9 @@
 ; Author         : Michael Meyer (michaelm_007) et al.
 ; e-Mail         : email.address@gmx.de
 ; License        : http://creativecommons.org/licenses/by-nc-sa/3.0/
-; Version        : 6.4.9.0
-; Download       : http://www.vbox.me
-; Support        : http://www.win-lite.de/wbb/index.php?page=Board&boardID=153
+; Version        : 7.0.12.1
+; Download       : http://www.spruceit.co.uk
+; Support        : http://www.spruceit.co.uk
 
 #AutoIt3Wrapper_Res_Fileversion=6.4.9.0
 #AutoIt3Wrapper_Res_ProductVersion=6.4.9.0
@@ -32,16 +32,16 @@ Opt ("TrayMenuMode", 11)
 Opt ("TrayOnEventMode", 1)
 
 ; Run only one instance
-If _Singleton("Portable-VirtualBox", 1) = 0 Then
+If _Singleton("Portable-VirtualBox7", 1) = 0 Then
   MsgBox($MB_SYSTEMMODAL, "Warning", "VirtualBox is already running!")
   Exit
 EndIf
 
 TraySetClick (16)
 TraySetState ()
-TraySetToolTip ("Portable-VirtualBox")
+TraySetToolTip ("Portable-VirtualBox7")
 
-Global $version = "6.4.9.0"
+Global $version = "7.0.12.1"
 Global $var1 = @ScriptDir&"\data\settings\settings.ini"
 Global $var2 = @ScriptDir&"\data\language\"
 Global $lng = IniRead ($var1, "language", "key", "NotFound")
@@ -751,7 +751,7 @@ If (FileExists (@ScriptDir&"\app32\virtualbox.exe") OR FileExists (@ScriptDir&"\
       ProcessWaitClose ("VirtualBoxVM.exe")
       ProcessWaitClose ("VBoxHeadless.exe")
 
-      SplashTextOn ("Portable-VirtualBox", IniRead ($var2 & $lng &".ini", "messages", "07", "NotFound"), 220, 40, -1, -1, 1, "arial", 12)
+      SplashTextOn ("Portable-VirtualBox7", IniRead ($var2 & $lng &".ini", "messages", "07", "NotFound"), 220, 40, -1, -1, 1, "arial", 12)
 
       ProcessWaitClose ("VBoxSVC.exe")
 
@@ -1198,9 +1198,9 @@ Func Settings ()
   GUICtrlSetOnEvent (-1, "ExitGUI")
 
   GUICtrlCreateTabItem (IniRead ($var2 & $lng &".ini", "about", "01", "NotFound"))
-  GUICtrlCreateLabel (". : Portable-VirtualBox Launcher v"& $version &" : .", 100, 40, 448, 26)
+  GUICtrlCreateLabel (". : Portable-VirtualBox7 Launcher v"& $version &" : .", 100, 40, 448, 26)
   GUICtrlSetFont (-1, 14, 800, 4, "Arial")
-  GUICtrlCreateLabel("Download and Support: http://www.win-lite.de/wbb/index.php?page=Board&&&boardID=153", 40, 70, 500, 20)
+  GUICtrlCreateLabel("Download and Support: http://www.spruceit.co.uk", 40, 70, 500, 20)
   GUICtrlSetFont (-1, 8, 800, 0, "Arial")
   GUICtrlCreateLabel ("VirtualBox is a family of powerful x86 virtualization products for enterprise as well as home use. Not only is VirtualBox an extremely feature rich, high performance product for enterprise customers, it is also the only professional solution that is freely available as Open Source Software under the terms of the GNU General Public License (GPL).", 16, 94, 546, 55)
   GUICtrlSetFont (-1, 8, 400, 0, "Arial")
@@ -1243,12 +1243,12 @@ Func SRCStartVM ()
   Local $PathVM, $VM_String, $String, $VDI, $VM_Start
   Local $Start_VM = IniRead ($var1, "startvm", "key", "NotFound")
   If IniRead ($var1, "startvm", "key", "NotFound") Then
-    If FileExists (@ScriptDir&"\data\.VirtualBox\HardDisks\") Then
-      $PathVM = FileOpenDialog (IniRead ($var2 & $lng &".ini", "srcstartvm", "01", "NotFound"), $Start_VM&"\.VirtualBox\HardDisks", "VirtualBox VM (*.vdi)", 1+2)
+    If FileExists (@ScriptDir&"\data\.VirtualBox\Machines\") Then
+      $PathVM = FileOpenDialog (IniRead ($var2 & $lng &".ini", "srcstartvm", "01", "NotFound"), $Start_VM&"\.VirtualBox\Machines", "VirtualBox VM (*.vdi)", 1+2)
     EndIf
   Else
     If FileExists (@ScriptDir&"\data\.VirtualBox\HardDisks\") Then
-      $PathVM = FileOpenDialog (IniRead ($var2 & $lng &".ini", "srcstartvm", "01", "NotFound"), @ScriptDir&"\data\.VirtualBox\HardDisks", "VirtualBox VM (*.vdi)", 1+2)
+      $PathVM = FileOpenDialog (IniRead ($var2 & $lng &".ini", "srcstartvm", "01", "NotFound"), @ScriptDir&"\data\.VirtualBox\Machines", "VirtualBox VM (*.vdi)", 1+2)
     EndIf
   EndIf
   If NOT @error Then
@@ -1792,19 +1792,17 @@ Func UpdateYes ()
       DirRemove (@ScriptDir&"\data\language", 1)
       DirRemove (@ScriptDir&"\data\tools", 1)
       DirRemove (@ScriptDir&"\source", 1)
-      FileDelete (@ScriptDir&"\LiesMich.txt")
-      FileDelete (@ScriptDir&"\ReadMe.txt")
+      FileDelete (@ScriptDir&"\data\ReadMe.txt")
     EndIf
 
     Sleep (2000)
 
-    DirMove (@ScriptDir&"\update\Portable-VirtualBox\data\language", @ScriptDir&"\data", 1)
-    DirMove (@ScriptDir&"\update\Portable-VirtualBox\data\tools", @ScriptDir&"\data", 1)
-    DirMove (@ScriptDir&"\update\Portable-VirtualBox\source", @ScriptDir, 1)
-    FileMove (@ScriptDir&"\update\Portable-VirtualBox\LiesMich.txt", @ScriptDir, 9)
-    FileMove (@ScriptDir&"\update\Portable-VirtualBox\ReadMe.txt", @ScriptDir, 9)
-    FileMove (@ScriptDir&"\update\Portable-VirtualBox\Portable-VirtualBox.exe", @ScriptDir&"\Portable-VirtualBox.exe_NEW", 9)
-    FileMove (@ScriptDir&"\update\Portable-VirtualBox\UpDate.exe", @ScriptDir&"\update.exe", 9)
+    DirMove (@ScriptDir&"\update\Portable-VirtualBox7\data\language", @ScriptDir&"\data", 1)
+    DirMove (@ScriptDir&"\update\Portable-VirtualBox7\data\tools", @ScriptDir&"\data", 1)
+    DirMove (@ScriptDir&"\update\Portable-VirtualBox7\source", @ScriptDir, 1)
+    FileMove (@ScriptDir&"\update\Portable-VirtualBox7\data\ReadMe.txt", @ScriptDir, 9)
+    FileMove (@ScriptDir&"\update\Portable-VirtualBox7\Portable-VirtualBox7.exe", @ScriptDir&"\Portable-VirtualBox7.exe_NEW", 9)
+    FileMove (@ScriptDir&"\update\Portable-VirtualBox7\UpDate.exe", @ScriptDir&"\update.exe", 9)
 
     IniWrite ($var1, "starter", "key", IniRead (@TempDir&"\update.ini", "starter", "key", "NotFound"))
   EndIf
