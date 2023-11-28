@@ -1,13 +1,13 @@
 . : Portable VirtualBox7 : . 
 
-Description: Only start the Portable-VirtualBox.exe as all settings
+Description: Only start the Portable-VirtualBox7.exe as all settings
              are automatically made. It must not be manually
              edited.
 
 Features of starter:
 
 - downloads and extracts the installation file contain within VirtualBox
-- SplashScreen shows on startup and closing Portable-VirtualBox 
+- SplashScreen shows on startup and closing Portable-VirtualBox7 
   (includes current VirtualBox compatible version) 
 - HotKeys (STRG+1 bis STRG+6)
 - HotKeys can be now self selected
@@ -16,7 +16,7 @@ Features of starter:
 - hide the VM and the manager in tray
 - change the homefolder, start-VM, hotkeys and language with
   mouseclick (multilanguage)
-- start of VirtualBox-Manager with parameter (Portable-VirtualBox.exe
+- start of VirtualBox-Manager with parameter (Portable-VirtualBox7.exe
   "VM")
 - all absolute paths in the VirtualBox.xml are replaced automatically
   by relative paths
@@ -29,9 +29,9 @@ Note: VirtualBox needs at least main user rights, there are 4 Services
       VirtualBox must have " Ring-3" - Mode initiated. The drivers
       for the network come from snetcfg.exe (from the ms DDK 2003)
       merge. So that they are loaded, they must be added into the Attitudes of
-      Portable-VirtualBox, under the rider " NET" , for them to be
+      Portable-VirtualBox7, under the rider " NET" , for them to be
       selected. For security, which one installs, must be agreed for the
-      installation. After terminating Portable-VirtualBox
+      installation. After terminating Portable-VirtualBox7
       the drivers and files are removed again! 
 
       Thus the NAT network functions and thus those shared-folders,
@@ -46,14 +46,14 @@ Note: VirtualBox needs at least main user rights, there are 4 Services
       to be able to use the Hotkeys. Since the focus lies then on the
       VM!
 
-Network support: 1. to download Portable-VirtualBox
-                 2. unpack from Portable-VirtualBox
-                 3. start from Portable-VirtualBox
+Network support: 1. to download Portable-VirtualBox7
+                 2. unpack from Portable-VirtualBox7
+                 3. start from Portable-VirtualBox7
                  4. attitudes open (Tray --> attitudes, CTRL+5)
                     --> rider Network (Tab) --> VirtualBox with
                     network support start --> memory (save)
-                 5. terminate from Portable-VirtualBox
-                 6. start from Portable-VirtualBox
+                 5. terminate from Portable-VirtualBox7
+                 6. start from Portable-VirtualBox7
                  7. driver installation agree
                  8. wait
                  9. selection of a VM and the network map to host
@@ -373,7 +373,7 @@ Version 2.2.4
 
 Version 2.2.3
 - Update languages files
-- Portable-VirtualBox now also on italian (thanks at @FSL from
+- Portable-VirtualBox7 now also on italian (thanks at @FSL from
   german-nlite.org-Forum)
 - A common file for "VBoxGuestAdditions.iso" by 32Bit/64Bit-
   AutoSwitch-Version
@@ -388,7 +388,7 @@ Version 2.2.1
 
 Version 2.2.0
 - BugFix of VirtualBox-Manager
-- Start of VirtualBox-Manager with parameter (Portable-VirtualBox.exe
+- Start of VirtualBox-Manager with parameter (Portable-VirtualBox7.exe
   "VM")
 - All absolute paths in the VirtualBox.xml are replaced automatically
   by relative paths
